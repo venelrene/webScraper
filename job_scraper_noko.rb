@@ -2,46 +2,57 @@ require 'nokogiri'
 
 require "open-uri"
 
-url = 'http://www.indeed.com/jobs?q=ruby+developer&l=Tampa%2C+FL'
-
-page = Nokogiri::HTML(open(url))
-
-puts "### Search for nodes by xpath"
-
-page.xpath('//div[@data-tn-component="organicJob"]').each do |whole_node|
-
-  #------- should be the main title of the post ------------
-  header = whole_node.at_xpath('./h2/a')
-  if (header.text).include? "Senior|senior"
-    title = "======SKIP========"
-  else
-    title =  header.text
+def call(whole_node)
+  whole_node.each do |whole_node|
+    puts "\n"
+    puts "Post Title:  #{title(whole_node)} - Date: #{post_date(whole_node)}"
+    puts "Post Company: #{post_company(whole_node)} - Location: #{post_location(whole_node)}"
+    puts "Post Link: #{whole_post_link(whole_node)}\n\n"
+    puts "==="*44
   end
-  #-------- posted date   ------------
-  post_date = whole_node.at_css("span.date").text
+end
 
-  #-------- post job location ------------
-  post_location = whole_node.at_css("span.location").text
+def url
+  'http://www.indeed.com/jobs?q=ruby+developer&l=Tampa%2C+FL'
+end
 
-  #-------- post company  ------------
-  post_company = whole_node.at_css("span.company").text
+def page
+  Nokogiri::HTML(open(url))
+end
 
+def whole_node
+  page.xpath('//div[@data-tn-component="organicJob"]')
+end
 
-  #--------- post link ---------------
-  href_link = header.attributes['href'].value
-  whole_post_link = "www.indeed.com#{href_link}"
+def header(whole_node)
+  whole_node.at_xpath('./h2/a')
+end
 
-  puts "###"*44
+def title(whole_node)
+  if (header(whole_node).text).include? "Senior|senior"
+    "======SKIP========"
+  else
+    header(whole_node).text.strip
+  end
+end
 
-  puts "Post Title:  #{title} - Date: #{post_date}"
-  puts "Post Company: #{post_company} - Location: #{post_location}"
-  puts "Post Link: #{whole_post_link}\n"
+def post_date(whole_node)
+  whole_node.at_css("span.date").text
+end
 
-  puts "==="*44
+def post_location(whole_node)
+  whole_node.at_css("span.location").text
+end
 
+def post_company(whole_node)
+  whole_node.at_css("span.company").text.strip
+end
 
+def whole_post_link(whole_node)
+  href_link = header(whole_node).attributes['href'].value
+  "www.indeed.com#{href_link}"
 end
 
 
-
-
+puts "Number of Posts #{whole_node.size}"
+call(whole_node)
