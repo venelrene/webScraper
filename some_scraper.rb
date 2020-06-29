@@ -5,7 +5,7 @@ require "open-uri"
 def call(whole_node)
   whole_node.each do |whole_node|
     puts "\n"
-    puts "Manga: #{title(whole_node)} - #{chapter_number(whole_node)} :::: #{release_date(whole_node)}"
+    puts "Manga: #{title(whole_node)} - #{chapter_number(whole_node)}   ( #{release_date(whole_node)} )"
     puts "Manga href: #{link(whole_node)}"
     puts "Manga All Page Version: #{all_page_link}\n\n"
     puts "==="*44
