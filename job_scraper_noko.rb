@@ -7,7 +7,7 @@ def call(whole_node)
     puts "\n"
     puts "Post Title:  #{title(whole_node)} - Date: #{post_date(whole_node)}"
     puts "Post Company: #{post_company(whole_node)} - Location: #{post_location(whole_node)}"
-    puts "Post Link: #{whole_post_link(whole_node)}\n\n"
+    puts "Post Link: #{post_link(whole_node)}\n\n"
     puts "==="*44
   end
 end
@@ -29,7 +29,7 @@ def header(whole_node)
 end
 
 def title(whole_node)
-  if (header(whole_node).text).include? "Senior|senior"
+  if header(whole_node).text.include? "Senior|senior"
     "======SKIP========"
   else
     header(whole_node).text.strip
@@ -48,7 +48,7 @@ def post_company(whole_node)
   whole_node.at_css("span.company").text.strip
 end
 
-def whole_post_link(whole_node)
+def post_link(whole_node)
   href_link = header(whole_node).attributes['href'].value
   "www.indeed.com#{href_link}"
 end
